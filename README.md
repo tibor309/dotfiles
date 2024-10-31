@@ -1,5 +1,8 @@
-# 🐧 Dotfiles
-My custom theme and config files for linux. The theme i use is a version of [ART3MISTICAL](https://github.com/ART3MISTICAL/dotfiles)'s one that i modified a bit. The theme is made for the gnome desktop environment, and uses dark mode. I've also made a script to automate installing apps, theme, fonts, megasync, and autocpu-freq for Fedora 39.
+# 🎨 Mauve
+This theme is a modified version of [ART3MISTICAL](https://github.com/ART3MISTICAL/dotfiles)'s second rice. It mainly focuses on tiling window management, and uses the Catppuccin Mocha Mauve theme with Colloid icons.
+
+> [!NOTE]
+> This setup was originally made for Fedora 39. Newer or other linux distros may have some issues!
 
 ## Screenshots
 ![Fedora 39_03_11_2023_12_01_58](https://github.com/tibor309/dotfiles/assets/9676404/7033f1c4-c3ed-4162-82f3-53a50a272e69)
@@ -32,3 +35,6 @@ These extensions are optional
 <a href='https://extensions.gnome.org/extension/5306/firefox-pip-always-on-to'> Firefox Pip Always On Top </a>
 <br>
 <a href='https://extensions.gnome.org/extension/5278/pano'> Pano </a>
+
+## Setup
+Clone the repo, and run the `install.sh` script. This will install all the needed packages, and configs. Then, install the above mentioned GNOME extensions, and customize them! You can also find the links for the extensions in the `extensions.txt` file. After that, in the GNOME Tweaks app, change the theme to catpuccin, and the icons to colloid dark. You might need to relog to apply the changes.
