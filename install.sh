@@ -17,7 +17,7 @@ echo -e "\nInstalling starship"
 curl -sS "https://starship.rs/install.sh" | sudo sh
 
 echo -e "\nInstalling mcfly"
-curl -LSfs "https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh" | sudo sh -s --git "cantino/mcfly" # install mcfly
+curl -LSfs "https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh" | sudo sh -s -- --git cantino/mcfly # install mcfly
 
 echo -e "\nDownloading files to /tmp"
 git clone "https://github.com/vinceliuice/Colloid-icon-theme.git" "/tmp/Colloid-icon-theme"
