@@ -2,7 +2,7 @@
 This theme is a modified version of [ART3MISTICAL](https://github.com/ART3MISTICAL/dotfiles)'s second rice. It mainly focuses on tiling window management, and uses the Catppuccin Mocha Mauve theme with Colloid icons.
 
 > [!NOTE]
-> This setup was originally made for Fedora 39. Newer or other linux distros may have some issues!
+> This setup was originally made for Fedora 39. The custom GNOME shell theme might have some issues on later versions.
 
 ## Screenshots
 ![Fedora 39_03_11_2023_12_01_58](https://github.com/tibor309/dotfiles/assets/9676404/7033f1c4-c3ed-4162-82f3-53a50a272e69)
@@ -37,4 +37,4 @@ These extensions are optional
 <a href='https://extensions.gnome.org/extension/5278/pano'> Pano </a>
 
 ## Setup
-Clone the repo, and run the `install.sh` script. This will install all the needed packages, and configs. Then, install the above mentioned GNOME extensions, and customize them! You can also find the links for the extensions in the `extensions.txt` file. After that, in the GNOME Tweaks app, change the theme to catpuccin, and the icons to colloid dark. You might need to relog to apply the changes.
+Clone the repo, and run the `install.sh` script. This will install all the needed packages, configs and themes. Then, install the above mentioned GNOME extensions, and customize them! You can also find the links for the extensions in the `extensions.txt` file. After that, in the GNOME Tweaks app, change the GNOME shell theme to the modded catppuccin theme, the apps to the normal catpuccin theme, and the icons to colloid dark. You might need to relog to apply the changes.

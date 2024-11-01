@@ -20,7 +20,7 @@ curl -LSfs "https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh
 echo "Installing fonts"
 wget -vO "/tmp/FiraCode.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.zip"
 mkdir -p "$HOME/.local/share/fonts"
-unzip "/tmp/FiraCode.zip" "*.ttf" -d "$HOME/.local/share/fonts"
+unzip "/tmp/FiraCode.zip" "*.ttf" -d "$HOME/.local/share/fonts/"
 sudo fc-cache -fv
 
 echo "Installing theme"
@@ -31,13 +31,15 @@ cp -r "./config"/* "$HOME/.config/"
 
 git clone "https://github.com/vinceliuice/Colloid-icon-theme.git" "/tmp/Colloid-icon-theme" # install colloid icon theme
 /tmp/Colloid-icon-theme/install.sh
-cp -r "./themes/(Modded) Catppuccin-Mocha-Standard-Mauve-Dark/gtk-3.0"/* "$HOME/.config/gtk-3.0/"
-cp -r "./themes/(Modded) Catppuccin-Mocha-Standard-Mauve-Dark/gtk-4.0"/* "$HOME/.config/gtk-4.0/"
+wget -vO "/tmp/catppuccin-mocha-mauve-standard+default.zip" "https://github.com/catppuccin/gtk/releases/download/v1.0.3/catppuccin-mocha-mauve-standard+default.zip"
+unzip "/tmp/catppuccin-mocha-mauve-standard+default.zip" "$HOME/.themes/"
+cp -r "./themes/catppuccin-mocha-mauve-standard+default/gtk-3.0"/* "$HOME/.config/gtk-3.0/"
+cp -r "./themes/catppuccin-mocha-mauve-standard+default/gtk-4.0"/* "$HOME/.config/gtk-4.0/"
 
 echo "Setting flatpak overrides"
 sudo flatpak override --filesystem=$HOME/.themes
 sudo flatpak override --filesystem=$HOME/.local/share/icons
-sudo flatpak override --env=GTK_THEME="(Modded) Catppuccin-Mocha-Standard-Mauve-Dark"
+sudo flatpak override --env=GTK_THEME="catppuccin-mocha-mauve-standard+default"
 sudo flatpak override --env=ICON_THEME="Colloid-Dark"
 
 echo "Cleaning up"
