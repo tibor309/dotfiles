@@ -1,8 +1,8 @@
 # 🎨 Mauve
 This theme is a modified version of [ART3MISTICAL](https://github.com/ART3MISTICAL/dotfiles)'s second rice. It mainly focuses on tiling window management, and uses the Catppuccin Mocha Mauve theme with Colloid icons.
 
-> [!NOTE]
-> This setup was originally made for Fedora 39. The custom GNOME shell theme might have some issues on later versions.
+> [!WARNING]
+> This setup was originally made for Fedora 39. Themes and configs might not work properly on other versions/distros.
 
 ## Packages
 
