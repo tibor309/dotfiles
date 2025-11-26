@@ -4,13 +4,20 @@ This theme is a modified version of [ART3MISTICAL](https://github.com/ART3MISTIC
 > [!NOTE]
 > This setup was originally made for Fedora 39. The custom GNOME shell theme might have some issues on later versions.
 
-## Screenshots
-![Fedora 39_03_11_2023_12_01_58](https://github.com/tibor309/dotfiles/assets/9676404/7033f1c4-c3ed-4162-82f3-53a50a272e69)
+## Packages
 
-<details><summary>More images</summary>
-  <img src=https://github.com/tibor309/dotfiles/assets/9676404/ca4bf4e7-ad3d-49d8-8ed9-1dfc882dc031/>
-  <img src=https://github.com/tibor309/dotfiles/assets/9676404/e2ca5c9a-141b-4602-b11a-9756e1c00203/>
-</details>
+- git
+- unzip
+- rsync
+- curl
+- zsh
+- fish
+- eza *(supported until Fedora 41)*
+- neofetch *(supported until Fedora 41)*
+- alacritty
+- gnome-browser-connector
+- gnome-extensions-app
+- gnome-tweaks
 
 ## Extensions
 
