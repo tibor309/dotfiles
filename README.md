@@ -1,5 +1,5 @@
 # 🐧 Dotfiles
-My custom themes and configs for linux. This repo only contains files that are needed for the themes only. Also note that I'm not really good at ricing.
+My custom themes and configs for linux. 
 
 ## Themes
 | [Mauve](https://github.com/tibynx/dotfiles/tree/mauve) *(deprecated)* |
