@@ -1,59 +1,95 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-echo -e "\nInstalling packages"
-sudo dnf install -y --best -y \
-    unzip \
-    git \
-    zsh \
-    fish \
-    eza \
-    neofetch \
-    alacritty \
-    gnome-browser-connector \
-    gnome-extensions-app \
-    gnome-tweaks 
+info() { printf "\n[INFO] %s\n" "$*"; }
+err()  { printf "\n[ERROR] %s\n" "$*"; }
 
-echo -e "\nInstalling starship"
-curl -sS "https://starship.rs/install.sh" | sudo sh
+WORKDIR="$(mktemp -d)"
+trap 'rm -rf "${WORKDIR}"' EXIT
 
-echo -e "\nInstalling mcfly"
-curl -LSfs "https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh" | sudo sh -s -- --git cantino/mcfly # install mcfly
+# Detect package manager
+if command -v dnf >/dev/null 2>&1; then
+    PKG_INSTALL="sudo dnf install -y --best --skip-unavailable"
+elif command -v apt-get >/dev/null 2>&1; then
+    PKG_INSTALL="sudo apt-get update && sudo apt-get install -y"
+else
+    err "Unsupported package manager. Please install dependencies manually."
+    exit 1
+fi
 
-echo -e "\nDownloading files to /tmp"
-git clone "https://github.com/vinceliuice/Colloid-icon-theme.git" "/tmp/Colloid-icon-theme"
-wget -vO "/tmp/FiraCode.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.zip"
-wget -vO "/tmp/catppuccin-mocha-mauve-standard+default.zip" "https://github.com/catppuccin/gtk/releases/download/v1.0.3/catppuccin-mocha-mauve-standard+default.zip"
+info "Installing system packages (may prompt for sudo)"
+${PKG_INSTALL} unzip git zsh fish eza neofetch alacritty gnome-browser-connector gnome-extensions-app gnome-tweaks curl rsync unzip
 
-echo -e "\nInstalling fonts"
+# Verify required commands
+for cmd in git unzip rsync curl fc-cache; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+        err "Required command '$cmd' not found. Aborting."
+        exit 1
+    fi
+done
+
+info "Downloading resources to temporary directory: ${WORKDIR}"
+COLLOID_DIR="$WORKDIR/Colloid-icon-theme"
+git clone --depth 1 "https://github.com/vinceliuice/Colloid-icon-theme.git" "$COLLOID_DIR"
+FIRA_ZIP="$WORKDIR/FiraCode.zip"
+CATPPUCCIN_ZIP="$WORKDIR/catppuccin-mocha-mauve-standard+default.zip"
+curl -fSL -o "$FIRA_ZIP" "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.zip"
+curl -fSL -o "$CATPPUCCIN_ZIP" "https://github.com/catppuccin/gtk/releases/latest/download/catppuccin-mocha-mauve-standard+default.zip"
+
+info "Installing fonts to user fonts directory"
 mkdir -p "$HOME/.local/share/fonts"
-unzip "/tmp/FiraCode.zip" "*.ttf" -d "$HOME/.local/share/fonts/"
+unzip -qq "$FIRA_ZIP" '*.ttf' -d "$HOME/.local/share/fonts/"
 
-echo -e "\nRefreshing font cache"
-sudo fc-cache -fv
+info "Refreshing user font cache"
+fc-cache -f
 
-echo -e "\nInstalling theme"
-mkdir -p "$HOME/.themes"
-mkdir -p "$HOME/.config/gtk-4.0"
-cp -r "./themes"/* "$HOME/.themes/"
-cp -r "./config"/* "$HOME/.config/"
+info "Installing themes and configs"
+mkdir -p "$HOME/.themes" "$HOME/.config"
+rsync -a --ignore-existing --backup --suffix=.bak ./themes/ "$HOME/.themes/"
+rsync -a --ignore-existing --backup --suffix=.bak ./config/ "$HOME/.config/"
 
-/tmp/Colloid-icon-theme/install.sh # install colloid icon theme
-unzip "/tmp/catppuccin-mocha-mauve-standard+default.zip" -d "$HOME/.themes/"
-cp -r "$HOME/.themes/catppuccin-mocha-mauve-standard+default/gtk-3.0"/* "$HOME/.config/gtk-3.0/"
-cp -r "$HOME/.themes/catppuccin-mocha-mauve-standard+default/gtk-4.0"/* "$HOME/.config/gtk-4.0/"
+info "Installing Colloid icon theme"
+if [ -x "$COLLOID_DIR/install.sh" ]; then
+    (cd "$COLLOID_DIR" && ./install.sh)
+else
+    info "Colloid installer not executable; copying icons to ~/.local/share/icons"
+    mkdir -p "$HOME/.local/share/icons"
+    rsync -a "$COLLOID_DIR/" "$HOME/.local/share/icons/Colloid-icon-theme/"
+fi
 
-echo -e "\nSetting flatpak overrides"
-sudo flatpak override --filesystem=$HOME/.themes
-sudo flatpak override --filesystem=$HOME/.local/share/icons
-sudo flatpak override --env=GTK_THEME="catppuccin-mocha-mauve-standard+default"
-sudo flatpak override --env=ICON_THEME="Colloid-Dark"
+info "Unpacking Catppuccin GTK theme for user"
+unzip -qq "$CATPPUCCIN_ZIP" -d "$HOME/.themes"
+mkdir -p "$HOME/.config/gtk-3.0" "$HOME/.config/gtk-4.0"
+if [ -d "$HOME/.themes/catppuccin-mocha-mauve-standard+default/gtk-3.0" ]; then
+    rsync -a --ignore-existing "$HOME/.themes/catppuccin-mocha-mauve-standard+default/gtk-3.0/" "$HOME/.config/gtk-3.0/"
+fi
+if [ -d "$HOME/.themes/catppuccin-mocha-mauve-standard+default/gtk-4.0" ]; then
+    rsync -a --ignore-existing "$HOME/.themes/catppuccin-mocha-mauve-standard+default/gtk-4.0/" "$HOME/.config/gtk-4.0/"
+fi
 
-echo -e "\nCleaning up"
-sudo dnf autoremove -y
-sudo dnf clean all
-sudo rm -rf \
-    /$HOME/.cache \
-    /tmp/*
+info "Installing Starship"
+if ! command -v starship >/dev/null 2>&1; then
+    curl -fsSL https://starship.rs/install.sh | sh -s -- -y
+else
+    info "Starship already installed; skipping"
+fi
 
-echo -e "\nDONE!\nApply the new theme in GNOME Tweaks!"
+info "Installing mcfly"
+if ! command -v mcfly >/dev/null 2>&1; then
+    curl -fsSL https://raw.githubusercontent.com/cantino/mcfly/master/ci/install.sh | sudo sh -s -- --git cantino/mcfly
+else
+    info "mcfly already installed; skipping"
+fi
+
+info "Applying per-user Flatpak overrides"
+if command -v flatpak >/dev/null 2>&1; then
+    flatpak override --user --filesystem="$HOME/.themes"
+    flatpak override --user --filesystem="$HOME/.local/share/icons"
+    flatpak override --user --env=GTK_THEME="catppuccin-mocha-mauve-standard+default"
+    flatpak override --user --env=ICON_THEME="Colloid-Dark"
+else
+    info "flatpak not found; skipping flatpak overrides"
+fi
+
+info "Finished. Open GNOME Tweaks and apply the new theme and icons. You may need to restart your session."
 
