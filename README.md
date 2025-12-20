@@ -34,7 +34,7 @@ This theme is a modified version of [ART3MISTICAL](https://github.com/ART3MISTIC
 The script is compatible with Fedora and Ubuntu based systems. This will install all the required packages, and applies the theme for gtk3/4 and Flatpak apps. You have to install the GNOME extensions manually!
 
 ```sh
-git clone -b mauve https://github.com/tibor309/dotfiles.git
+git clone -b mauve https://github.com/tibynx/dotfiles.git
 cd dotfiles/
 ./install.sh
 ```
